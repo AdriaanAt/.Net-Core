@@ -113,6 +113,7 @@ export class DotnetVersionResolver {
 export class DotnetCoreInstaller {
   private version: string;
   private quality: QualityOptions;
+  private architecture: string;
 
   static {
     const installationDirectoryWindows = path.join(
@@ -140,9 +141,14 @@ export class DotnetCoreInstaller {
     }
   }
 
-  constructor(version: string, quality: QualityOptions) {
+  constructor(
+    version: string,
+    quality: QualityOptions,
+    architecture: string = ''
+  ) {
     this.version = version;
     this.quality = quality;
+    this.architecture = architecture;
   }
 
   private static convertInstallPathToAbsolute(installDir: string): string {
@@ -229,6 +235,10 @@ export class DotnetCoreInstaller {
 
       if (this.quality) {
         this.setQuality(dotnetVersion, scriptArguments);
+      }
+
+      if (this.architecture != '') {
+        scriptArguments.push('--architecture', this.architecture);
       }
     }
     // process.env must be explicitly passed in for DOTNET_INSTALL_DIR to be used

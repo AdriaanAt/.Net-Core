@@ -30,6 +30,17 @@ steps:
 ```
 > **Warning**: Unless a concrete version is specified in the [`global.json`](https://learn.microsoft.com/en-us/dotnet/core/tools/global-json) file, **_the latest .NET version installed on the runner (including preinstalled versions) will be used [by default](https://learn.microsoft.com/en-us/dotnet/core/versions/selection#the-sdk-uses-the-latest-installed-version)_**. Please refer to the [documentation](https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners#supported-software) for the currently preinstalled .NET SDK versions.
 
+**Specific architecture:**
+```yml
+steps:
+- uses: actions/checkout@v3
+- uses: actions/setup-dotnet@v2
+  with:
+    dotnet-version: '6.0.x'
+    architecture: 'x86'
+- run: dotnet build <my project>
+```
+
 **Multiple version installation**:
 ```yml
 steps:

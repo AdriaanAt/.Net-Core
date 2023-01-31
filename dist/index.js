@@ -315,9 +315,10 @@ class DotnetVersionResolver {
 exports.DotnetVersionResolver = DotnetVersionResolver;
 DotnetVersionResolver.DotNetCoreIndexUrl = 'https://dotnetcli.azureedge.net/dotnet/release-metadata/releases-index.json';
 class DotnetCoreInstaller {
-    constructor(version, quality) {
+    constructor(version, quality, architecture = '') {
         this.version = version;
         this.quality = quality;
+        this.architecture = architecture;
     }
     static convertInstallPathToAbsolute(installDir) {
         let transformedPath;
@@ -391,6 +392,9 @@ class DotnetCoreInstaller {
                 }
                 if (this.quality) {
                     this.setQuality(dotnetVersion, scriptArguments);
+                }
+                if (this.architecture != '') {
+                    scriptArguments.push('--architecture', this.architecture);
                 }
             }
             // process.env must be explicitly passed in for DOTNET_INSTALL_DIR to be used
@@ -511,6 +515,10 @@ function run() {
             //
             const versions = core.getMultilineInput('dotnet-version');
             const installedDotnetVersions = [];
+            let architecture = core.getInput('architecture');
+            if (!architecture) {
+                architecture = '';
+            }
             const globalJsonFileInput = core.getInput('global-json-file');
             if (globalJsonFileInput) {
                 const globalJsonPath = path_1.default.join(process.cwd(), globalJsonFileInput);
@@ -538,7 +546,7 @@ function run() {
                 let dotnetInstaller;
                 const uniqueVersions = new Set(versions);
                 for (const version of uniqueVersions) {
-                    dotnetInstaller = new installer_1.DotnetCoreInstaller(version, quality);
+                    dotnetInstaller = new installer_1.DotnetCoreInstaller(version, quality, architecture);
                     const installedVersion = yield dotnetInstaller.installDotnet();
                     installedDotnetVersions.push(installedVersion);
                 }
